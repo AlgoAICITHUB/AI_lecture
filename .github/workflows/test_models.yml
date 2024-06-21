@@ -29,7 +29,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ${{ matrix.folder }}/requirements.txt
 
+      - name: Find model files
+        id: find_model_files
+        run: |
+          MODEL_FILES=$(ls ${{ matrix.folder }}/*.onnx)
+          echo "::set-output name=model_files::$MODEL_FILES"
+
       - name: Run tests
         run: |
-          echo "Running tests for ${{ matrix.folder }}"
-          python ${{ matrix.folder }}/test_${{ matrix.folder }}.py
+          for MODEL_FILE in ${{ steps.find_model_files.outputs.model_files }}; do
+            MODEL_NAME=$(basename $MODEL_FILE .onnx)
+            echo "Running tests for $MODEL_FILE"
+            python ${{ matrix.folder }}/test_${{ matrix.folder }}.py $MODEL_FILE ${{ matrix.folder }}/result_${MODEL_NAME}.csv
+          done
