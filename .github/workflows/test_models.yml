@@ -1,0 +1,35 @@
+name: Test Models
+
+on:
+  push:
+    paths:
+      - 'Titanic/**'
+      - 'MRI/**'
+      - 'RNN/**'
+
+jobs:
+  test_models:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        folder: ['Titanic', 'MRI', 'RNN']
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ${{ matrix.folder }}/requirements.txt
+
+      - name: Run tests
+        run: |
+          echo "Running tests for ${{ matrix.folder }}"
+          python ${{ matrix.folder }}/test_${{ matrix.folder }}.py
