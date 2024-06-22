@@ -1,0 +1,38 @@
+name: Test MRI Models
+
+on:
+  push:
+    paths:
+      - 'MRI/**'
+
+jobs:
+  test_mri_models:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r MRI/requirements.txt
+
+      - name: Find MRI model files
+        id: find_model_files
+        run: |
+          MODEL_FILES=$(ls MRI/*.onnx)
+          echo "MODEL_FILES=$MODEL_FILES" >> $GITHUB_ENV
+
+      - name: Run MRI model tests
+        run: |
+          for MODEL_FILE in $MODEL_FILES; do
+            MODEL_NAME=$(basename $MODEL_FILE .onnx)
+            echo "Running tests for $MODEL_FILE"
+            python MRI/test_MRI.py $MODEL_FILE MRI/result_${MODEL_NAME}.csv
+          done
