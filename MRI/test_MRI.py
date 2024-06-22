@@ -14,8 +14,8 @@ def main(model_path, output_csv):
         print(f"Model expects input shape: {input_shape}")
 
         # 加載測試數據和真實標籤
-        test_data = np.load('test_data.npy', allow_pickle=True).astype(np.float32)
-        true_labels = np.load('test_labels.npy', allow_pickle=True)
+        test_data = np.load('MRI/test_data.npy', allow_pickle=True).astype(np.float32)
+        true_labels = np.load('MRI/test_labels.npy', allow_pickle=True)
 
         # 初始化計數器
         total_predictions = 0
