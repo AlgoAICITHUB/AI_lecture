@@ -9,7 +9,7 @@ def main(model_path, output_csv):
         session = ort.InferenceSession(model_path)
         
         # 加載測試數據
-        test_data = np.load('MRI/test_data.npy')
+        test_data = np.load('MRI/test.npy')
 
         # 獲取模型輸入名稱
         input_name = session.get_inputs()[0].name
